@@ -28,6 +28,7 @@ import threading
 import traceback
 import argparse
 import syslog as _syslog
+import json
 
 try:
     # noinspection PyUnresolvedReferences
@@ -201,7 +202,8 @@ class VrfyDmnMilter(Milter.Base):
                     email = component
             else:
                 if b'@' in component:
-                    email = component.decode("utf-8")
+                    encoding = json.detect_encoding(component)
+                    email = component.decode(encoding)
 
         email = parseaddr(email)[1]
 
