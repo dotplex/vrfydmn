@@ -202,8 +202,12 @@ class VrfyDmnMilter(Milter.Base):
                     email = component
             else:
                 if b'@' in component:
-                    encoding = json.detect_encoding(component)
-                    email = component.decode(encoding)
+                    try:
+                        encoding = json.detect_encoding(component)
+                        email = component.decode(encoding)
+                    except Exception as e:
+                        self.__reject = True
+                        syslog(LOG_INFO, "Unable to decode email address. Error: %s" % e)
 
         email = parseaddr(email)[1]
 
